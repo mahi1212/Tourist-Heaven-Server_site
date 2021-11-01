@@ -20,6 +20,7 @@ async function run(){
         console.log('connected to database')
         const database = client.db('touristHeaven')
         const serviceCollection = database.collection('services')
+        const orderCollection = database.collection('myOrders')
 
         // GET API
         app.get('/services', async(req,res)=>{
@@ -29,18 +30,16 @@ async function run(){
         })
         
         // Get Single Service 
-        app.get('/services/:id', async(req,res)=>{
+        app.get('/myOrder/:id', async(req,res)=>{
             const id = req.params.id
             const query = { _id : ObjectId(id)}
-            const service = await serviceCollection.findOne(query)
+            const service = await orderCollection.findOne(query)
             res.json(service)
         })
         
         // Post API
         app.post('/services', async (req, res) => {
             const service = req.body;
-            console.log('hit the api', service) 
-            res.send('Post hitted')
             const result = await serviceCollection.insertOne(service)
             res.json(result)
         })
@@ -52,10 +51,6 @@ async function run(){
 run().catch(console.dir)
 app.get('/', (req, res) => {
   res.send('Hello World!')
-})
-
-app.get('/deki', (req,res)=>{
-    res.send('Workin')
 })
 
 app.listen(port, () => {
