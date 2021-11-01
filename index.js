@@ -43,7 +43,6 @@ async function run(){
             res.send('Post hitted')
             const result = await serviceCollection.insertOne(service)
             res.json(result)
-            // console.log(result)
         })
 
     }finally{
