@@ -31,10 +31,19 @@ async function run(){
         // Get Single Service 
         app.get('/services/:id', async(req,res)=>{
             const id = req.params.id
-            console.log("getting id", id)
-            const query = { _id : ObjectId(id)} // Do not use "=" instead of ":"
-            const service = await serviceCollection.findOne()
+            const query = { _id : ObjectId(id)}
+            const service = await serviceCollection.findOne(query)
             res.json(service)
+        })
+        
+        // Post API
+        app.post('/services', async (req, res) => {
+            const service = req.body;
+            console.log('hit the api', service) 
+            res.send('Post hitted')
+            const result = await serviceCollection.insertOne(service)
+            res.json(result)
+            // console.log(result)
         })
 
     }finally{
