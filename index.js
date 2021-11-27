@@ -1,7 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 const { MongoClient } = require('mongodb');
-const ObjectId = require('mongodb').ObjectId 
+// const ObjectId = require('mongodb').ObjectId 
 require('dotenv').config()
 
 const app = express()
@@ -20,22 +20,36 @@ async function run(){
         console.log('connected to database')
         const database = client.db('touristHeaven')
         const serviceCollection = database.collection('services')
-        const orderCollection = database.collection('myOrders')
+        const orderCollection = database.collection('orders')
 
         // GET API
         app.get('/services', async(req,res)=>{
             const cursor = serviceCollection.find({})
             const services = await cursor.toArray()
-            res.send(services)
+            res.json(services)
         })
         
-        // Get Single Service 
-        app.get('/myOrder/:id', async(req,res)=>{
-            const id = req.params.id
-            const query = { _id : ObjectId(id)}
-            const service = await orderCollection.findOne(query)
-            res.json(service)
+        // Get Order API -- use email here 
+        app.get('/myOrder', async(req,res)=>{
+            const cursor = orderCollection.find({})
+            const order = await cursor.toArray()
+            res.json(order)
         })
+        
+        // Post order API
+        app.post('/myOrder', async(req,res)=>{
+            const order = req.body
+            const myOrder = await orderCollection.insertOne(order)
+            res.json(myOrder)
+        })
+
+        // // Get Single Service 
+        // app.get('/myOrder/:id', async(req,res)=>{
+        //     const id = req.params.id
+        //     const query = { _id : ObjectId(id)}
+        //     const service = await orderCollection.findOne(query)
+        //     res.json(service)
+        // })
         
         // Post API
         app.post('/services', async (req, res) => {
