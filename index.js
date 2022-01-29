@@ -22,34 +22,12 @@ async function run(){
         const serviceCollection = database.collection('services')
         const orderCollection = database.collection('orders')
 
-        // GET API
+        // GET service API
         app.get('/services', async(req,res)=>{
             const cursor = serviceCollection.find({})
             const services = await cursor.toArray()
             res.json(services)
         })
-        
-        // Get Order API -- use email here 
-        app.get('/myOrder', async(req,res)=>{
-            const cursor = orderCollection.find({})
-            const order = await cursor.toArray()
-            res.json(order)
-        })
-        
-        // Post order API
-        app.post('/myOrder', async(req,res)=>{
-            const order = req.body
-            const myOrder = await orderCollection.insertOne(order)
-            res.json(myOrder)
-        })
-
-        // // Get Single Service 
-        // app.get('/myOrder/:id', async(req,res)=>{
-        //     const id = req.params.id
-        //     const query = { _id : ObjectId(id)}
-        //     const service = await orderCollection.findOne(query)
-        //     res.json(service)
-        // })
         
         // Post API
         app.post('/services', async (req, res) => {
@@ -57,6 +35,32 @@ async function run(){
             const result = await serviceCollection.insertOne(service)
             res.json(result)
         })
+
+        // Get Order API -- use email here 
+        app.get('/orders', async(req,res)=>{
+            const email = req.query.email
+            const query = {email : email}//here first email is field of database orders collection
+            console.log(query)
+            const cursor = orderCollection.find(query)
+            const orders = await cursor.toArray()
+            res.json(orders)
+        })
+
+        // Post Order API
+        app.post('/orders', async(req,res)=>{
+            const order = req.body
+            const myOrder = await orderCollection.insertOne(order)
+            res.json(myOrder)
+        })
+
+        // // Get Single Service 
+        // app.get('/services/:serviceName', async(req,res)=>{
+        //     const id = req.params.serviceName
+        //     const query = { _id : ObjectId(id)}
+        //     const service = await orderCollection.findOne(query)
+        //     res.json(service)
+        // })
+        
 
     }finally{
         // await client.close()
